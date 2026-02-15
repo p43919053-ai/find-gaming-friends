@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamer Profile</title>
+    <link rel="stylesheet" href="css/home.css">
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // ТВОЯ НОВА КОНФІГУРАЦІЯ (має бути 1 в 1 як в index.html)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAnc1n52-LVhZ72vYSmvWv97enqqrqBBi4",
+    authDomain: "mneploho-7ff8b.firebaseapp.com",
+    projectId: "mneploho-7ff8b",
+    storageBucket: "mneploho-7ff8b.firebasestorage.app",
+    messagingSenderId: "554377149418",
+    appId: "1:554377149418:web:44f345329d803c674c9093",
+    measurementId: "G-LM2032YE2W"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.db = db; 
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("Авторизовано:", user.email);
+      
+      // Знаходимо елементи для імені та аватара
+      const userNickSpans = document.querySelectorAll('.user-nick');
+      const topAvatar = document.getElementById('top-bar-avatar');
+      
+      // Беремо дані: спочатку з localStorage, потім з Google/Firebase
+      const savedName = localStorage.getItem('user_name');
+      const savedAvatar = localStorage.getItem('user_avatar');
+
+      const displayName = savedName || user.displayName || user.email.split('@')[0];
+      const displayAvatar = savedAvatar || user.photoURL || 'https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png';
+
+      // Оновлюємо ім'я всюди на сторінці
+      userNickSpans.forEach(span => span.textContent = displayName);
+      
+      // Оновлюємо аватар у топ-барі
+      if (topAvatar) topAvatar.src = displayAvatar;
+
+    } else {
+      console.warn("Користувач не в системі, повертаємо на логін.");
+      window.location.replace("index.html"); 
+    }
+  });
+
+  // Ждем загрузки документа
+document.addEventListener('DOMContentLoaded', () => {
+    const profileBtn = document.getElementById('user-profile-btn');
+    
+    if (profileBtn) {
+        profileBtn.onclick = () => {
+            // Переход на страницу профиля
+            window.location.href = "profile.html";
+        };
+    }
+});
+
+
+  // 2. ФУНКЦИЯ ВЫХОДА (привяжем к кнопке в контекстном меню)
+  window.logoutUser = function() {
+    signOut(auth).then(() => {
+      window.location.href = "index.html";
+    }).catch((error) => {
+      console.error("Ошибка при выходе:", error);
+    });
+  };
+</script>
+</head>
+<body>
+    <div id="alert-top" class="custom-alert">
+       Більше 500 символів ввести не можна!
+    </div>
+
+    <div class="top-bar">
+    <div class="top-bar-right">
+        <button id="user-profile-btn" class="profile-avatar-btn">
+            <img id="top-bar-avatar" src="https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png" alt="Profile">
+        </button>
+    </div>
+   </div>
+
+    <div class="side-panel-block">
+            <div class="nav-container-vertical"> <button id="btn-feed" class="nav-button active-tab">ЛЕНТА</button>
+            
+            <button id="btn-requests" class="nav-button">ЗАЯВКИ</button>
+            
+            <button id="btn-blog" class="nav-button">БЛОГ</button>
+        </div> 
+
+        <button class="custom-button" id="add-post-btn">
+         <div class="icon-circle"></div>
+         <div class="text-wrapper">Додати пост</div>
+        </button>
+
+        <div class="image-previews-container" id="media-upload-container">
+            <div class="preview-item-wrapper">
+                <div class="image-preview-box" onclick="addPhotoPlaceholder(this)">
+                    <span class="plus-icon">+</span>
+                </div>
+                <div class="preview-mini-title"></div> 
+            </div>
+        </div>
+
+        <div class="sidebar-sections-container">
+            <div class="chat-section" id="channels-section">
+                <div class="section-header">Канали</div>
+                <div class="chat-list" id="channel-chats">
+                    <div class="chat-item">
+                        <div class="avatar-wrapper">
+                            <div class="avatar-placeholder">#</div>
+                        </div>
+                        <div class="chat-info">
+                            <span class="chat-name-placeholder">загальний-чат</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-section" id="personal-section">
+                <div class="section-header">Особисті чати</div>
+                <div class="chat-list" id="personal-chats">
+                    <div class="chat-item">
+                        <div class="avatar-wrapper">
+                            <div class="avatar-placeholder"></div>
+                            <div class="status-indicator"></div> 
+                        </div>
+                        <div class="chat-info">
+                            <span class="chat-name-placeholder">Gamer_Friend</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-section" id="groups-section">
+                <div class="section-header">Групи</div>
+                <div class="chat-list" id="group-chats">
+                    <div class="chat-item">
+                        <div class="avatar-wrapper">
+                            <div class="avatar-placeholder">G</div>
+                        </div>
+                        <div class="chat-info">
+                            <span class="chat-name-placeholder">Моя Команда</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div> 
+
+    <div id="custom-context-menu" class="context-menu">
+        <div id="mute-toggle-text" class="context-menu-item" onclick="mutePhoto()">Заглушити</div>
+        <div class="context-menu-item" onclick="removePhoto()">Вийти</div>
+    </div>
+
+    <div class="overlay-header"></div> 
+    
+    <div class="main-content-block">
+        <div id="create-post-panel" class="create-post-wrapper">
+            <div class="post-editor-card">
+                <div class="editor-header">
+                    <div class="header-main-info">
+                        <div class="user-info-row">
+                            <div class="user-avatar-small">
+                                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=100&auto=format&fit=crop" alt="User">
+                            </div>
+                            <span class="user-nick">Gamer_Guest</span>
+                        </div>
+                        <div class="group-selection-wrapper">
+                            <select id="post-target-group" class="group-select">
+                                <option value="all">Усі групи</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="editor-inputs">
+                    <input type="text" id="new-post-title" class="post-title-input" placeholder="Заголовок поста" autocomplete="off">
+                    
+                    <div class="photo-upload-section">
+                        <div id="post-image-preview-large" class="image-preview-large add-photo-main-box" onclick="document.getElementById('post-file-input').click()">
+                            <div class="preview-content">
+                                <span class="plus-icon-big">+</span>
+                                <span class="preview-text">Додати фото</span>
+                            </div>
+                            <img src="" id="preview-img-tag" style="display:none;">
+                            <button class="remove-preview" onclick="event.stopPropagation(); clearPhotoPreview()">×</button>
+                        </div>
+                        <input type="file" id="post-file-input" style="display: none;" accept="image/*" onchange="handlePostImage(this)">
+                    </div>
+
+                    <textarea id="new-post-body" class="post-body-input" maxlength="501" placeholder="О чем думаете?" autocomplete="off"></textarea>
+                </div>
+
+                <div class="editor-footer">
+                    <div class="editor-actions">
+                        <button class="cancel-btn" onclick="togglePostEditor()">Скасувати</button>
+                        <button class="publish-btn" onclick="publishPost()">Опублікувати</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="feed-content" class="tab-content active">
+            <h1>Мои игры (Лента)</h1>
+            <p>Контент ленты...</p>
+        </div>
+
+        <div id="requests-content" class="tab-content">
+            <h1>Мои заявки</h1>
+            <p>Здесь будут заявки...</p>
+        </div>
+
+        <div id="blog-content" class="tab-content" style="display: none;">
+            <div class="blog-header-banner" style="background: linear-gradient(45deg, #ff4500, #2b5278); padding: 30px; border-radius: 15px; margin-bottom: 20px; color: white;">
+                <h2>🎮 Блог Геймера</h2>
+                <p>Новости, обновления и мысли...</p>
+            </div>
+            
+            <div id="blog-posts-feed">
+                <p style="color: #888;">Пока записей нет...</p>
+            </div>
+        </div>
+    </div> 
+
+    <div id="games-modal" class="modal-games-overlay">
+       <div class="modal-games-content">
+    <div class="modal-games-header">
+        <h3 id="modal-games-main-title">Виберіть гру</h3>
+        <button class="close-games" onclick="closeGamesModal()">&times;</button>
+    </div>
+
+    <div class="search-row">
+        <div id="modal-back-button" onclick="goBackToList()" style="display: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </div>
+        <input type="text" id="modal-search" placeholder="Пошук гри..." oninput="filterMedia()">
+    </div>
+
+    <div id="media-grid" class="media-grid"></div>
+</div>
+
+    <div id="comments-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="comments-header">
+                <button class="back-to-post-minimal" onclick="closeCommentsModal()">← Назад</button>
+                <div class="header-title">Коментарі</div>
+            </div>
+            <div class="comments-list" id="modal-comments-list"></div>
+            <div class="comment-input-wrapper">
+                <input type="text" id="modal-comment-input" class="comment-input-field" placeholder="Напишіть коментар...">
+                <button class="send-comment-arrow" onclick="addCommentFromModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/home.js"></script>
+</body>
+</html>
