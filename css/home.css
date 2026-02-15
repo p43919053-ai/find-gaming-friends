@@ -1,0 +1,2029 @@
+/* Обнуляем отступы и запрещаем скролл всей страницы */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    
+    /* ВАЖНО: Убирает прокрутку у самого окна браузера */
+    overflow: hidden; 
+    height: 100vh; /* Фиксируем высоту экрана */
+}
+
+/* Верхняя полоска */
+.top-bar {
+    height: 60px; /* Эта цифра должна совпадать с 'top' у серого блока */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    background-color: #2c2c2c;
+    position: fixed; /* Полоса всегда сверху при скролле */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.profile-avatar-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 32px;  /* Уменьшенный размер */
+    height: 32px; /* Уменьшенный размер */
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: filter 0.3s ease, transform 0.2s ease;
+    
+    /* Делаем аватарку черно-белой */
+    filter: grayscale(100%); 
+}
+
+.profile-avatar-btn:hover {
+    /* При наведении становится цветной и чуть ярче */
+    filter: grayscale(0%);
+    transform: scale(1.05);
+}
+
+.profile-avatar-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Левая панель (Темная) */
+.side-panel-block {
+    width: 245px;
+    height: 855px; /* Фиксированная высота */
+    
+    position: absolute;
+    top: 87px;
+    left: 60px;
+    
+    background-color: #333333;
+    border-radius: 50px 0 0 50px;
+    overflow: hidden; 
+}
+
+/* Основной блок (Светлый, с прокруткой) */
+.main-content-block {
+    /* Ограничиваем ширину, оставляя место для левой панели */
+    width: calc(100% - 340px); 
+    max-width: 1555px;
+    
+    /* Возвращаем фиксированную высоту, которая была удобной раньше */
+    height: 855px; 
+    
+    position: absolute;
+    /* Опускаем блок ровно под top-bar */
+    top: 87px; 
+    left: 305px; 
+    
+    background-color: #b8b8b8;
+    
+    /* Скругления со всех сторон, кроме левой верхней, чтобы прилегало к панели */
+    border-radius: 0px 50px 50px 0px;
+    
+    /* Внутренние отступы и прокрутка */
+    padding: 40px; 
+    box-sizing: border-box;
+    overflow-y: auto; 
+    
+    /* Убираем лишние overflow, чтобы не мешать скроллу */
+    z-index: 1;
+}
+/* --- СТИЛИЗАЦИЯ СКРОЛЛБАРА (Полоска прокрутки справа) --- */
+
+/* Ширина полосы */
+.main-content-block::-webkit-scrollbar {
+    width: 12px; /* Чуть шире, чтобы было удобно попадать мышкой */
+}
+
+/* Фон полосы (трек) */
+.main-content-block::-webkit-scrollbar-track {
+    background: transparent; /* Прозрачный фон или цвет блока */
+    margin-top: 50px; /* Отступ сверху, чтобы не наезжал на скругление */
+    margin-bottom: 50px; /* Отступ снизу */
+}
+
+/* Сам ползунок */
+.main-content-block::-webkit-scrollbar-thumb {
+    background-color: #555; /* Темно-серый цвет ползунка */
+    border-radius: 20px;    /* Закругленный ползунок */
+    border: 3px solid #b8b8b8; /* Отступ внутри, чтобы ползунок казался тоньше */
+}
+
+/* Ползунок при наведении */
+.main-content-block::-webkit-scrollbar-thumb:hover {
+    background-color: #333;
+}
+
+
+.nav-container {
+    display: flex;
+    align-items: center; /* Центрирование кнопок по вертикали внутри 88px */
+    height: 100%;
+    
+    /* Устанавливаем точный отступ 900px от левого края родителя */
+    margin-left: 600px; 
+}
+
+/* Стили для кнопок (оставляем прежними для красоты) */
+.nav-button {
+    background: transparent; /* Прозрачный фон */
+    border: none;             /* Убираем стандартную рамку */
+    color: white;             /* Цвет текста */
+    font-family: 'Arial', sans-serif; /* Можно заменить на твой игровой шрифт */
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;      /* Расстояние между буквами для "геймерского" стиля */
+    cursor: pointer;          /* Курсор при наведении */
+    padding: 10px 20px;
+    transition: 0.4s;         /* Плавное изменение цвета */
+    outline: none;
+}
+
+
+
+/* Состояние при наведении (Hover) */
+.nav-button:hover, 
+.custom-button:hover {
+    background-color: rgba(0, 0, 0, 0.2); /* Затемнение фона */
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    width: 210px;
+}
+
+/* Состояние когда кнопка активна (выбрана) */
+.nav-button.active-tab,
+.custom-button.active-status {
+    background-color: rgba(0, 0, 0, 0.5) !important; /* Еще более темный фон */
+    color: #ffffff;
+    border-left: 3px solid #ffffff; /* Белая полоска слева для акцента */
+    padding-left: 15px; /* Немного смещаем текст вправо из-за полоски */
+    width: 210px;
+}
+
+/* Добавим общие стили для плавности переходов */
+.nav-button, .custom-button {
+    transition: all 0.3s ease; /* Плавная смена фона и цвета */
+    border-radius: 5px;       /* Легкое скругление углов фона */
+}
+/* Скрываем все вкладки по умолчанию */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease; /* Плавное появление */
+}
+
+/* Показываем только активную вкладку */
+.tab-content.active {
+    display: block;
+}
+
+/* Анимация плавного перехода */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.custom-button {
+    /* Позиционирование внутри side-panel-block */
+    position: absolute;
+    top: 170px;
+    left: 30px;
+
+    /* Внешний вид - теперь в стиле ЛЕНТА/ЗАЯВКИ */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 10px 5px; /* Совпадает с паддингом навигаторов */
+    
+    /* Шрифт как у кнопок меню */
+    color: white;
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    
+    transition: 0.3s;
+    outline: none;
+    z-index: 6;
+    
+}
+
+.custom-button:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgb(255, 255, 255);
+    opacity: 1; /* Убираем прошлую прозрачность */
+}
+
+/* Круг с крестиком - адаптируем под новый цвет при наведении */
+.icon-circle {
+    width: 15px;
+    height: 15px;
+    border: 2px solid currentColor; /* Использует цвет текста кнопки */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    position: relative;
+    transition: 0.3s;
+}
+
+.icon-circle::before, .icon-circle::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 2px;
+    background-color: currentColor; /* Использует цвет текста кнопки */
+}
+.icon-circle::after {
+    transform: rotate(90deg);
+}
+
+/* Текст с тонкой линией */
+.text-wrapper {
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.text-wrapper::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px; /* Чуть заметнее линия */
+    background-color: currentColor;
+    opacity: 0.5;
+}
+
+/* Контейнер для кнопок ЛЕНТА и ЗАЯВКИ */
+/* 1. Верхняя навигация */
+.nav-container-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    top: 30px;      /* Фиксированный отступ сверху */
+    left: 35px;
+    gap: 10px;
+    z-index: 5;
+}
+
+
+
+
+/* Стили заголовков секций (полосы) */
+.section-header {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.4);
+    padding: 6px 12px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 5px;
+    margin: 15px 0 10px 0;
+}
+
+/* Скрываем секцию, если чатов в ней нет */
+.chat-section:has(.chat-list:empty) {
+    display: none;
+}
+
+/* Тонкий скроллбар для списка чатов (опционально) */
+.sidebar-sections-container::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar-sections-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+.image-previews-container {
+    position: absolute;
+    top: 200px; /* Подняли выше (было 185px) */
+    left: 30px; 
+    width: 210px; /* Фиксированная ширина, чтобы 4 квадрата стояли ровно */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Расстояние между квадратами 10 пикселей */
+    z-index: 10;
+}
+
+.image-preview-box {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px;
+    min-height: 40px;
+    background: #2a2a2a;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid #3d3d3d;
+}
+
+.image-preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Состояние при наведении */
+.image-preview-box:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Обновляем позицию чатов, так как блок поднялся */
+
+/* Контекстное меню */
+.context-menu {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    z-index: 1000;
+    background: #202225; /* Темный цвет в стиле Discord */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    width: 150px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+    padding: 5px 0;
+}
+
+.context-menu-item {
+    padding: 8px 12px;
+    color: #dcddde;
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.context-menu-item:hover {
+    background: #5865f2; /* Синий цвет при наведении */
+    color: white;
+}
+
+/* Эффект "Заглушить" (картинка темнеет) */
+.image-preview-box.muted img {
+    filter: brightness(0.3) grayscale(0.5); /* Затемнение и обесцвечивание */
+    transition: filter 0.3s ease;
+}
+/* --- ОБНОВЛЕННЫЙ МАКЕТ ЧАТОВ (ВСТАВИТЬ В КОНЕЦ) --- */
+
+/* Элемент списка (один чат или группа) */
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: 12px;
+    transition: background 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.chat-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Круглая аватарка слева */
+.avatar-wrapper {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    margin-right: 12px;
+    flex-shrink: 0; /* Чтобы не сплющило */
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Идеальный круг */
+    background-color: #444; /* Цвет до загрузки */
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Точка статуса */
+.status-indicator {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid #333; /* Обводка под цвет панели */
+    background-color: #43b581; /* Зеленый (Online) */
+}
+
+/* Информация (Ник) */
+.chat-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.chat-name-placeholder {
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Исправляем высоту контейнера, чтобы он не перекрывал картинки */
+.sidebar-sections-container {
+    position: absolute;
+    top: 260px; /* Скорректируй, чтобы было ровно под квадратами */
+    left: 0;
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+/* Затемненный фон за окном */
+.modal-overlay {
+    display: none; /* Скрыто изначально */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Затемнение */
+    z-index: 10000;
+    
+    /* ЦЕНТРИРОВАНИЕ */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+/* Само окно с твоими размерами */
+.modal-content {
+    width: 1400px;
+    height: 800px;
+    background: #2f3136;
+    border-radius: 30px;
+    padding: 40px;
+    position: relative; /* Чтобы крестик не улетал */
+    overflow: hidden; /* Чтобы скроллилась только сетка внутри */
+}
+/* Кнопка закрытия */
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: 0.3s;
+}
+
+.modal-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+/* Анимация плавного вылета */
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(50px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* Шапка модалки */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Центрируем содержимое */
+    margin-bottom: 30px;
+    position: relative;     /* Для позиционирования кнопки относительно шапки */
+    min-height: 50px;
+}
+
+.modal-header h2 {
+    color: white;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+}
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+/* Поисковая строка */
+.search-wrapper input {
+    width: 300px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    color: white;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-wrapper input:focus {
+    border-color: #5865f2;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Сетка карточек */
+.modal-grid {
+    display: grid;
+    /* Указываем 170px для колонки */
+    grid-template-columns: repeat(auto-fill, 170px); 
+    gap: 25px;
+    justify-content: center;
+    /* Высота должна быть меньше высоты модалки (800px), чтобы появился скролл */
+    max-height: 650px; 
+    overflow-y: auto; 
+    padding: 10px;
+}
+
+/* Сделаем скроллбар более заметным и стильным */
+.modal-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+
+.modal-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 2px solid #2f3136; /* Создает отступ вокруг ползунка */
+}
+
+.modal-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Сама карточка с жесткими размерами */
+.media-card {
+    width: 170px;
+    height: 240px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Та самая рамка */
+    border-radius: 15px;
+    padding: 10px;
+    box-sizing: border-box; /* Чтобы padding не увеличивал размер */
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.media-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Контейнер для фото внутри карточки */
+.media-img-container {
+    position: relative; /* ОБЯЗАТЕЛЬНО: база для полоски */
+    width: 100%;
+    height: 160px;
+    border-radius: 10px;
+    overflow: hidden; /* Чтобы полоска не вылезала за скругления */
+    margin-bottom: 10px;
+}
+
+.top-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 18px; /* Увеличили ширину (высоту) полоски */
+    
+    /* Красивый градиент */
+    background: linear-gradient(90deg, #ff8a00, #e52e71);
+    
+    /* Стили для текста TOP */
+    color: white;
+    font-family: 'Arial Black', sans-serif; /* Жирный шрифт */
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 18px; /* Выравнивание текста строго по вертикали */
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Чтобы текст лучше читался */
+    
+    z-index: 10;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.media-card:hover .top-indicator {
+    filter: brightness(1.2);
+    height: 20px; /* Слегка увеличивается при наведении */
+    transition: 0.3s;
+}
+.media-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Подпись */
+.media-title {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Если имя длинное — будет троеточие */
+    margin-top: auto; /* Прижимает текст к низу карточки */
+    padding-bottom: 5px;
+}
+
+/* Скроллбар внутри модалки */
+.modal-grid::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+/* Контейнер для пары: Квадрат + Название */
+.preview-item-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px; /* Строго 35 пикселей */
+    flex-shrink: 0; /* Запрещаем сжиматься */
+    margin: 0; /* Убираем любые внешние отступы */
+}
+/* Название под маленьким квадратом */
+.preview-mini-title {
+    font-size: 8px;
+    line-height: 1.1;
+    color: #aaa;
+    text-align: center;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 35px; /* Ширина текста совпадает с шириной иконки */
+    display: block;
+}
+
+/* Исправляем контейнер превью, чтобы элементы стояли ровно */
+
+
+#modal-back-btn {
+    position: absolute;
+    left: 0; /* Прижимаем строго к левому краю */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+}
+#modal-back-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Обертка формы */
+.create-post-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+/* Состояние OPEN */
+.create-post-wrapper.open {
+    max-height: 800px; 
+    opacity: 1;
+    margin-bottom: 25px;
+}
+
+/* Карточка редактора */
+.post-editor-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;       /* Внутренний отступ всей карточки */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Шапка с юзером */
+.editor-header {
+    display: flex;
+    justify-content: space-between; /* Селект уходит вправо */
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+.header-user-block {
+    display: flex;
+    flex-direction: column; /* Имя под аватаркой */
+    align-items: center;
+    gap: 5px;
+}
+.user-avatar-small img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-nick {
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
+}
+.photo-upload-section {
+    margin: 15px 0;
+}
+
+.add-photo-square:hover {
+    border-color: #3498db;
+    background: #ecf0f1;
+}
+
+.add-photo-square .plus-icon {
+    font-size: 20px;
+    color: #666;
+    line-height: 1;
+}
+
+.photo-label {
+    font-size: 8px;
+    text-transform: uppercase;
+    color: #666;
+    margin-top: 2px;
+    text-align: center;
+}
+
+/* Скрываем старую кнопку "Додати фото" в футере, если она там осталась */
+.editor-tools .tool-btn {
+    display: none;
+}
+.add-photo-square {
+    width: 60px; /* Размер как в левой панели */
+    height: 60px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    background: #f9f9f9;
+}
+
+/* Поля ввода */
+.post-title-input, .post-body-input {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'Arial', sans-serif;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+.post-title-input:focus, .post-body-input:focus {
+    border-color: #5865f2; /* Синий акцент */
+    outline: none;
+}
+
+.post-title-input {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.post-body-input {
+    min-height: 80px !important;
+    max-height: 150px !important;
+    resize: vertical;
+}
+
+/* Футер с кнопками */
+.editor-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 15px;
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.tool-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.tool-btn:hover {
+    color: #333;
+    background: rgba(0,0,0,0.05);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.cancel-btn {
+    background: transparent;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #555;
+}
+
+.publish-btn {
+    background: #333; /* Темная кнопка */
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.publish-btn:hover {
+    background: #5865f2; /* Синий при наведении */
+}
+
+/* --- Стили для созданного поста (чтобы было красиво, когда опубликуем) --- */
+.user-post-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    animation: fadeIn 0.5s ease;
+}
+.post-header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+}
+.post-content h3 { margin: 0 0 10px 0; }
+.post-content p { color: #333; line-height: 1.5; }
+/* Выбор группы в шапке поста */
+.group-select {
+    display: block;
+    margin-top: 4px;
+    background: #f0f2f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: #555;
+    cursor: pointer;
+    outline: none;
+}
+
+/* Большое окно предпросмотра фото */
+.image-preview-large {
+    width: 100%;           /* Тянется до максимума */
+    max-width: 400px;      /* НО не шире 400px (настрой под себя) */
+    height: 200px;         /* Фиксированная высота */
+    background: #f1f1f1;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    margin: 15px auto;     /* Центрирование блока по горизонтали */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; 
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05); /* Легкая тень внутрь */
+}
+
+.image-preview-large img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Картинка впишется в блок, не растягивая его */
+}
+
+.preview-text {
+    color: #aaa;
+    font-size: 14px;
+}
+
+.remove-preview {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+.editor-inputs {
+    flex: 1 !important;
+    overflow-y: auto !important; /* Кнопки остаются на месте, а текст можно крутить */
+    padding-right: 10px;
+}
+
+#preview-img-tag {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Обрезает фото под размер контейнера */
+    display: none;
+}
+
+.post-content img {
+    width: 100%;
+    height: 300px; /* Или любая удобная высота */
+    object-fit: cover; /* Фото в ленте тоже будет одного формата */
+    border-radius: 8px;
+    margin-top: 10px;
+    display: block;
+}
+
+.post-published-image {
+    display: block;
+    width: 100%;
+    max-width: 400px;    /* Такая же ширина, как в редакторе */
+    height: 220px;       /* Фиксированная высота для аккуратности */
+    object-fit: cover;   /* Обрезка под формат */
+    margin: 10px auto;   /* Центрирование и отступы */
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.post-text-container {
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    max-height: 3.6em; /* Примерно 2 строки текста */
+    line-height: 1.8em;
+}
+.post-text-container.expanded {
+    max-height: 1000px; /* Достаточно большое значение */
+}
+
+.expand-bar {
+    width: 100%;
+    height: 24px;
+    background: #3a3939;
+    border: 1px solid #3a3939;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    transition: background 0.2s;
+}
+
+.expand-bar:hover {
+    background: #4b4b4b;
+}
+
+/* Иконка стрелочки */
+.expand-arrow {
+    font-size: 14px;
+    color: #888;
+    transform: rotate(90deg); /* Из > делаем стрелку вниз */
+    transition: transform 0.3s;
+}
+
+.expanded + .expand-bar .expand-arrow {
+    transform: rotate(-90deg); /* При раскрытии смотрит вверх */
+}
+
+/* Стили для всплывающего уведомления */
+.custom-alert {
+    position: fixed;
+    top: -100px; /* Прячем за экраном */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff4d4d; /* Красный цвет */
+    color: white;
+    padding: 15px 40px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 10000; /* Самый высокий приоритет */
+    font-weight: bold;
+    transition: top 0.5s ease-in-out;
+}
+
+/* Класс для активации появления */
+.custom-alert.show {
+    top: 0;
+}
+
+/* --- ПРАВКИ ДЛЯ РЕДАКТОРА (ДОБАВИТЬ В КОНЕЦ) --- */
+
+/* 1. Группируем Аватар и Текст (Ник + Селект) в один ряд */
+.header-main-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Расстояние между ником и селектом групп */
+    margin-bottom: 15px;
+}
+
+.header-left-side {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.user-info-row {
+    display: flex;
+    align-items: center; /* Центрирует ник по вертикали относительно фото */
+    gap: 12px;           /* Расстояние между фото и ником */
+}
+
+.user-avatar-small {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+}
+
+.user-avatar-small img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+/* 2. Контейнер для Ника и Селекта (один под другим) */
+.user-text-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центрирует ник и селект вертикально */
+}
+
+/* 3. Стили ника */
+.user-nick {
+    font-size: 16px;
+    font-weight: bold;
+    color: #222;
+    font-family: 'Arial', sans-serif;
+}
+/* 4. Стили селекта выбора группы */
+.group-select {
+    display: inline-block;
+    background: #f0f2f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #555;
+    cursor: pointer;
+}
+
+.post-editor-card {
+    max-height: 85vh !important; /* 85% от высоты экрана */
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+}
+
+/* 5. Настройка БОЛЬШОГО окна для фото (как ты просил) */
+.image-preview-large.add-photo-main-box {
+    /* Чтобы увидеть центровку, ширина не должна быть 100% */
+    /* Вы можете установить фиксированную ширину или % меньше 100 */
+    width: 90%; 
+    max-width: 400px; /* Ограничиваем максимальную ширину для красоты */
+    
+    height: 220px;
+    background: #f8f9fa;
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    
+    /* ГЛАВНОЕ: margin: 15px auto обеспечивает центровку по горизонтали */
+    margin: 15px auto; 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer; /* Добавил, чтобы было понятно, что на него можно нажать */
+}
+
+.image-preview-large.add-photo-main-box:hover {
+    background: #f7f9fb;
+    border-color: #5865f2; /* Синий цвет при наведении */
+}
+
+/* 6. Иконка Плюса и Текст "Додати фото" внутри */
+.preview-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none; /* Чтобы не мешали клику по родителю */
+}
+
+.plus-icon-big {
+    font-size: 40px;
+    color: #bbb;
+    line-height: 1;
+}
+
+.plus-icon {
+    font-size: 14px;
+    line-height: 1;
+    color: #888;
+}
+.preview-text {
+    font-size: 14px;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+.user-nick-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* 7. Если фото загружено, оно должно перекрывать весь блок */
+#preview-img-tag {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Заполняет весь блок без искажений */
+    z-index: 5;
+    display: none;
+}
+/* 8. Кнопка удаления фото (Крестик) */
+.remove-preview {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    color: #333;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    z-index: 15;
+    display: none; /* Скрыто, пока нет фото */
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Контейнер действий внизу поста */
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Группировка кнопок (Лайк/Дизлайк) */
+.action-group {
+    display: flex;
+    align-items: center;
+    background: #f0f2f5;
+    border-radius: 20px;
+    padding: 2px 4px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f2f5;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: #555;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.action-btn:hover {
+    background: #e4e6e9;
+}
+
+/* Стили для голосования */
+.vote-count {
+    font-size: 13px;
+    font-weight: bold;
+    padding: 0 4px;
+}
+
+.upvote:hover { color: #ff4500; }
+.downvote:hover { color: #7193ff; }
+
+/* Общие стили карточки поста для аккуратности */
+.user-post-card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid #edeff1;
+    transition: border-color 0.2s;
+}
+
+.user-post-card:hover {
+    border-color: #ccc;
+}
+
+.upvote.active {
+    color: #ff4500 !important;
+}
+
+.downvote.active {
+    color: #7193ff !important;
+}
+
+.active-award {
+    color: #ffd700 !important;
+    background: #fff9e6 !important;
+}
+
+.post-text-container {
+    max-height: 100px; /* Высота свернутого поста */
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    position: relative;
+}
+
+.post-text-container.expanded {
+    max-height: none;
+}
+
+.expand-bar {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 5px 0;
+    background: linear-gradient(transparent, #f9f9f9);
+    margin-top: -10px;
+    position: relative;
+    z-index: 2;
+}
+/* 1. ОБЩИЙ КОНТЕЙНЕР ИНТЕРФЕЙСА */
+.comments-interface {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* 2. ШАПКА */
+.comments-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.back-to-post-minimal {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 0;
+}
+
+.back-to-post-minimal:hover { color: #000; }
+
+.header-title {
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+/* 3. СПИСОК КОММЕНТАРИЕВ */
+.comments-list {
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 20px;
+    background: #fff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Стилизация скроллбара для Chrome/Safari */
+.comments-list::-webkit-scrollbar {
+    width: 6px;
+}
+.comments-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px;
+}
+
+.no-comments {
+    color: #888;
+    text-align: center;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+/* 4. СТРУКТУРА КОММЕНТАРИЯ */
+.modern-comment-container {
+    margin-bottom: 16px;
+    position: relative;
+}
+
+
+.modal-content {
+    /* Растягиваем на всю площадь родителя */
+    width: 100% !important;
+    height: 100% !important;
+    
+    /* Убираем все внешние отступы, которые его сжимают */
+    margin: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    
+    background: #fff !important;
+    display: flex !important;
+    flex-direction: column !important;
+    
+    /* Убираем скругление самого белого блока, чтобы он слился с серым */
+    border-radius: 12px !important; 
+    overflow: hidden;
+}
+/* Сдвиг для ответов (ветки) */
+.reply-offset {
+    margin-left: 35px;
+    border-left: 2px solid #e0e0e0;
+    padding-left: 12px;
+    margin-top: 10px;
+}
+
+.comment-avatar {
+    width: 32px;
+    height: 32px;
+    background: #ccc;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-author {
+    font-size: 13px;
+    font-weight: 700;
+    color: #444;
+}
+
+.comment-author span {
+    font-weight: 400;
+    color: #999;
+    margin-left: 4px;
+}
+
+.comment-text {
+    font-size: 14px;
+    margin-top: 4px;
+    color: #111;
+    line-height: 1.4;
+}
+
+/* 5. КНОПКИ ДЕЙСТВИЙ */
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.comment-vote {
+    display: flex;
+    align-items: center;
+    background: #f0f2f5;
+    border-radius: 15px;
+    padding: 2px 8px;
+    gap: 5px;
+}
+
+.comment-vote button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    color: #666;
+    padding: 2px 4px;
+}
+
+.comment-vote span {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.action-link {
+    background: none;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: #65676b;
+    cursor: pointer;
+    padding: 0;
+}
+
+.emoji-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    padding: 0;
+    font-size: 14px;
+}
+
+/* 6. УПРАВЛЕНИЕ ОТВЕТАМИ */
+.replies-toggle {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    margin-top: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.replies-toggle:hover { color: #444; }
+
+.replies-container {
+    margin-top: 5px;
+}
+
+/* 7. ПОЛЕ ВВОДА (НИЗ) */
+.comment-input-wrapper {
+    width: 100%;
+    padding: 15px 20px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+.comment-input-field {
+    flex: 1;
+    background: #f0f2f5;
+    border-radius: 20px;
+    padding: 12px 20px;
+    border: none;
+    outline: none;
+    
+    /* Убирает растягивающийся уголок в углу поля */
+    resize: none !important; 
+    
+    /* Ограничиваем высоту, чтобы поле не росло само по себе */
+    min-height: 44px;
+    max-height: 150px;
+    box-sizing: border-box;
+}
+
+.comment-input-field:focus {
+    background: #fff;
+    border-color: #0084ff;
+    box-shadow: 0 0 0 2px rgba(0,132,255,0.1);
+}
+
+.send-comment-arrow {
+    background: #0084ff;
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.send-comment-arrow:hover { background: #0073e6; }
+
+/* Индикатор ответа над полем ввода */
+.reply-info {
+    font-size: 12px;
+    color: #65676b;
+    margin-bottom: 5px;
+    padding-left: 10px;
+}
+.reply-info b { color: #0084ff; }
+.reply-info span { cursor: pointer; margin-left: 8px; color: #ff4d4d; font-weight: bold; }
+
+.input-row { display: flex; align-items: flex-end; width: 100%; gap: 8px; }
+
+/* Активные состояния кнопок голосования */
+.comment-vote button.active-up { color: #ff4500; font-weight: bold; }
+.comment-vote button.active-down { color: #7193ff; font-weight: bold; }
+
+/* Линия ветки для ответов */
+.reply-offset {
+    margin-left: 35px;
+    border-left: 2px solid #e0e0e0;
+    padding-left: 12px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.reply-offset {
+    margin-left: 40px !important; /* Единый отступ для всех ответов */
+    padding-left: 0 !important;   /* Обнуляем, чтобы не было лесенки */
+}
+
+.reply-to-user {
+    color: #8e8e8e; /* Серый цвет как в TikTok */
+    font-weight: normal;
+    margin-left: 4px;
+    font-size: 0.9em;
+}
+
+.reply-to-user::before {
+    margin-right: 4px;
+}
+
+/* Фикс для идеального столбика (из предыдущего шага) */
+.reply-offset {
+    margin-left: 44px !important; /* Отступ для аватарок ответов */
+    padding-left: 0 !important;
+}
+
+/* Эффект для заглушенной игры */
+.image-preview-box.muted-game img {
+    filter: brightness(0.3) grayscale(1); /* Делаем картинку темной и ч/б */
+    transition: filter 0.3s ease;
+}
+
+/* Стили для самого контекстного меню (если их еще нет) */
+.context-menu {
+    display: none;
+    position: absolute;
+    background: #2b2b2b;
+    border: 1px solid #444;
+    border-radius: 8px;
+    z-index: 10000;
+    min-width: 150px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    padding: 5px 0;
+}
+
+.context-menu-item {
+    padding: 10px 15px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.context-menu-item:hover {
+    background: #3d3d3d;
+}
+
+/* Красный цвет для кнопки Выйти */
+.context-menu-item:last-child {
+    color: #ff5c5c;
+}
+
+/* Цвет активного лайка */
+.upvote.active-up svg {
+    stroke: #ff4500 !important;
+    fill: #ff450022;
+}
+
+/* Цвет активного дизлайка */
+.downvote.active-down svg {
+    stroke: #7193ff !important;
+    fill: #7193ff22;
+}
+
+/* Эффект нажатия */
+.action-btn:active {
+    transform: scale(0.9);
+}
+
+.modal-overlay {
+    position: absolute !important; 
+    inset: 0 !important;           /* Растягивает от 0 до 0 по всем краям */
+    width: 100% !important;
+    height: 100% !important;
+    background: #fff !important;   /* Чисто белый фон, чтобы скрыть ленту */
+    display: none;                 /* По умолчанию скрыто */
+    z-index: 9999 !important;
+    border-radius: 12px;           /* Чтобы совпадало со скруглением серого блока */
+}
+.modal-overlay.active {
+    display: flex;
+}
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Помаранчева мітка TOP */
+.top-indicator {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #ff4500;
+    color: white; /* ВИПРАВЛЕНО: просто white або #ffffff */
+    font-size: 9px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-weight: 800;
+    z-index: 2; /* Щоб мітка була точно поверх картинки */
+    text-transform: uppercase; /* Щоб завжди було капсом */
+}
+
+/* Подложка модалки игр */
+.modal-games-overlay {
+    position: fixed; /* Именно fixed, чтобы поверх всего */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Темнее для акцента */
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    z-index: 50000; /* Самый высокий приоритет */
+}
+
+
+/* Сама карточка игры */
+.media-card {
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s;
+}
+.media-card:hover { transform: scale(1.05); }
+
+.media-img-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #eee;
+    position: relative;
+}
+
+.media-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media-title {
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #333;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+#modal-search {
+    width: 100%;
+    max-width: 350px; /* Ограничиваем ширину, чтобы не был на весь экран */
+    margin: 0 auto !important;
+    display: block;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 10px 15px;
+    color: white;
+    font-size: 14px;
+    outline: none;
+    
+}
+
+#modal-search:focus {
+    border-color: #5865f2;
+}
+
+/* --- ИСПРАВЛЕННЫЙ БЛОК МОДАЛКИ ИГР --- */
+
+/* 1. Общий фон (Overlay) */
+.modal-games-overlay {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9); /* Глубокий черный */
+    backdrop-filter: blur(15px);
+    z-index: 60000; /* Самый высокий приоритет */
+    justify-content: center;
+    align-items: center;
+}
+
+/* 2. Контентное окно */
+.modal-games-content {
+    width: 95%;
+    max-width: 1200px;
+    height: 90vh;
+    background: #121212; /* Темная тема */
+    border-radius: 24px;
+    border: 1px solid #333;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+
+/* 3. Исправленная сетка (Grid) */
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+    gap: 20px;
+    padding: 10px;
+    overflow-y: auto;
+    /* Убираем лишние флекс-свойства, если они мешают */
+}
+
+/* 4. КАРТОЧКА ИГРЫ (Исправление выравнивания) */
+.media-card {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* Важно для TOP метки */
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 280px; /* Фиксированная высота карточки */
+}
+
+.media-card:hover {
+    transform: translateY(-5px);
+    border-color: #ff4500;
+    box-shadow: 0 10px 20px rgba(255, 69, 0, 0.1);
+}
+
+/* Контейнер для фото (чтобы все были одного размера) */
+.media-img-container {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Квадратные обложки */
+    border-radius: 12px;
+    overflow: hidden;
+    background: #222;
+}
+
+.media-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 5. ПОМАРАНЧЕВА МІТКА TOP (Исправлено) */
+.top-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff4500 !important;
+    color: #fff !important;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 900;
+    z-index: 10; /* Поверх всего в карточке */
+    text-transform: uppercase;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* 6. ЗАГОЛОВОК ИГРЫ */
+.media-title {
+    margin-top: 12px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Исправленный скроллбар для темной темы */
+.media-grid::-webkit-scrollbar { width: 6px; }
+.media-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+/* Сетка именно внутри игрового окна */
+.games-modal-content .modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 170px);
+    gap: 25px;
+    justify-content: center;
+    max-height: 650px;
+    overflow-y: auto;
+}
+
+/* Карточка игры */
+.games-modal-content .media-card {
+    width: 170px;
+    height: 240px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    transition: 0.3s;
+}
+
+.games-modal-content .media-title {
+    color: #ffffff;
+    font-size: 13px;
+    text-align: center;
+    margin-top: auto;
+}
+
+/* Подложка комментариев */
+.comments-modal-overlay {
+    position: absolute; 
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff; /* Чисто белый фон */
+    display: none;
+    z-index: 9999;
+    border-radius: 12px;
+}
+
+/* Контент комментариев */
+.comments-modal-content {
+    width: 100% !important;
+    height: 100% !important;
+    background: #fff !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    color: #333; /* Темный текст для светлого фона */
+}
+
+/* Список комментариев */
+.comments-modal-content .comments-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fff;
+}
+
+/* Поле ввода в комментариях */
+.comments-modal-content .comment-input-wrapper {
+    width: 100%;
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    background: #fff;
+    display: flex;
+    align-items: center;
+}
+
+.close-games {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    background: #333; /* Темный фон для кнопки */
+    border: none;
+    color: white;
+    font-size: 24px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%; /* Круглая кнопка */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    z-index: 100;
+}
+
+.close-games:hover {
+    background: #ff4500; /* Подсветка при наведении */
+    transform: rotate(90deg);
+}
+
+.modal-games-header h3 {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 5px;
+    font-size: 20px;
+    color: #fff;
+}
+
+#media-upload-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    /* Выравниваем по левому краю */
+    justify-content: flex-start; 
+    align-items: flex-start;
+    gap: 8px; /* Расстояние между иконками */
+    width: 100%;
+    /* Регулируйте это число (15px), чтобы подвинуть первый квадрат левее или правее */
+    padding: 15px 0 15px 0px; 
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+#modal-back-button {
+    display: none;           /* Включается через JS (display: flex) */
+    position: absolute;      /* Вырываем из потока, чтобы поиск не видел её */
+    left: 10px;              /* Прижимаем к левому краю строки */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #aaa;
+    z-index: 10;             /* Чтобы была поверх всего */
+}
+
+#modal-back-button:hover {
+    color: #fff;
+}
+
+.search-row {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Центрирует содержимое */
+    position: relative;      /* Нужно для позиционирования кнопки */
+    width: 100%;
+    height: 45px;            /* Фиксированная высота, чтобы ничего не прыгало */
+    margin: 10px 0 20px 0;
+}
+
+.comments-interface-large {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    height: 100%; /* Занимает всю высоту родителя */
+    min-height: 500px;
+    border-radius: 15px; /* Скругления как на примере */
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+#comments-modal.modal-overlay {
+    display: none; /* Включается через class .active */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: flex-end; /* Окно будет "вырастать" снизу или стоять по центру */
+}
+
